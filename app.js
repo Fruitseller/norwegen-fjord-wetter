@@ -225,7 +225,7 @@ function popupHtml(day, w) {
   }
   if (w && w.ok) {
     const c = wmo(w.code);
-    html += `<div class="popup__big">${c.icon} ${w.tmax}° <small style="font-weight:500;color:#5b7689">/ ${w.tmin}°</small></div>`;
+    html += `<div class="popup__big">${c.icon} ${w.tmax}° <small style="font-weight:500;color:#9fc0d4">/ ${w.tmin}°</small></div>`;
     html += `<div class="popup__row">${c.label}`;
     if (w.precipProb != null) html += ` · 🌧️ ${w.precipProb}%`;
     html += `</div>`;
@@ -246,7 +246,7 @@ function renderStrip(byDay) {
     const cond = w && w.ok ? wmo(w.code) : null;
     const btn = document.createElement("button");
     btn.className = "wcard";
-    btn.style.borderTopColor = cond ? CAT_COLOR[cond.cat] : "var(--w-cloud)";
+    btn.style.setProperty("--accent", cond ? CAT_COLOR[cond.cat] : "var(--w-cloud)");
     btn.innerHTML =
       `<div class="wcard__day">Tag ${day.day} · ${day.weekday}</div>` +
       `<div class="wcard__name">${day.type === "sea" ? "⚓ Seetag" : day.name}</div>` +
@@ -281,7 +281,7 @@ function renderDays(byDay) {
     const card = document.createElement("article");
     card.className = "day" + (day.type === "sea" ? " day--sea" : "");
     card.id = "day-" + day.day;
-    card.style.borderLeftColor = accent;
+    card.style.setProperty("--accent", accent);
 
     card.innerHTML =
       headHtml(day, w, cond) +

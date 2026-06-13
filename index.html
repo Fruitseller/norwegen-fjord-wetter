@@ -8,6 +8,15 @@
       name="description"
       content="Wetterübersicht für die Mein-Schiff-Reise Norwegens Fjorde (21.–28. Juni 2026) mit Karte und Tagesvorhersage für jeden Hafen."
     />
+    <meta name="theme-color" content="#07192a" />
+
+    <!-- Schriften: Fraunces (Display-Serife mit Charakter) + Hanken Grotesk (UI/Text) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..600,40;1,9..144,400..600,60&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Leaflet (Karte) -->
     <link
@@ -24,12 +33,41 @@
   </head>
   <body>
     <header class="hero">
+      <!-- Atmosphäre: Mitternachtssonne + Polarlicht-Bänder -->
+      <div class="hero__sky" aria-hidden="true">
+        <span class="hero__sun"></span>
+        <span class="aurora aurora--1"></span>
+        <span class="aurora aurora--2"></span>
+        <span class="aurora aurora--3"></span>
+      </div>
+
       <div class="hero__inner">
-        <p class="hero__eyebrow">⛴️ Mein Schiff 3 · Reise 4476611</p>
-        <h1 class="hero__title">Norwegens Fjorde</h1>
+        <p class="hero__eyebrow">⛴ Mein Schiff 3 · Reise 4476611</p>
+        <h1 class="hero__title">Norwegens <em>Fjorde</em></h1>
         <p class="hero__subtitle" id="hero-subtitle"></p>
         <p class="hero__updated" id="last-updated">Wetterdaten werden geladen …</p>
       </div>
+
+      <!-- Geschichtete Fjord-Bergketten als Übergang zur Seite -->
+      <svg
+        class="hero__mountains"
+        viewBox="0 0 1440 220"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <path
+          class="ridge ridge--far"
+          d="M0,152 L120,120 240,142 360,92 480,132 600,82 720,122 840,72 960,116 1080,86 1200,132 1320,96 1440,126 L1440,220 L0,220 Z"
+        />
+        <path
+          class="ridge ridge--mid"
+          d="M0,182 L160,142 320,172 480,122 640,166 800,116 960,162 1120,126 1280,172 1440,142 L1440,220 L0,220 Z"
+        />
+        <path
+          class="ridge ridge--near"
+          d="M0,212 L180,176 360,206 540,166 720,202 900,172 1080,206 1260,176 1440,202 L1440,220 L0,220 Z"
+        />
+      </svg>
     </header>
 
     <main class="container">
@@ -55,11 +93,14 @@
       </figure>
 
       <!-- Wetter-Schnellüberblick: ganze Woche auf einen Blick -->
-      <section class="section" aria-labelledby="overview-title">
-        <h2 class="section__title" id="overview-title">Wetter auf einen Blick</h2>
-        <p class="section__hint">
-          Die ganze Reise im Überblick – tippe auf einen Tag für Details.
-        </p>
+      <section class="section reveal" aria-labelledby="overview-title">
+        <div class="section__head">
+          <span class="section__kicker">01 — Überblick</span>
+          <h2 class="section__title" id="overview-title">Wetter auf einen Blick</h2>
+          <p class="section__hint">
+            Die ganze Reise im Überblick – tippe auf einen Tag für Details.
+          </p>
+        </div>
         <div class="scroll-wrap">
           <div class="weather-strip scroller" id="weather-strip">
             <!-- per JS gefüllt -->
@@ -68,17 +109,26 @@
       </section>
 
       <!-- Karte mit der Route und den Häfen -->
-      <section class="section" aria-labelledby="map-title">
-        <h2 class="section__title" id="map-title">Route &amp; Häfen</h2>
-        <p class="section__hint">
-          Die Marker zeigen das Wetter am jeweiligen Hafen. Klick für mehr.
-        </p>
-        <div id="map" class="map"></div>
+      <section class="section reveal" aria-labelledby="map-title">
+        <div class="section__head">
+          <span class="section__kicker">02 — Route</span>
+          <h2 class="section__title" id="map-title">Route &amp; Häfen</h2>
+          <p class="section__hint">
+            Die Marker zeigen das Wetter am jeweiligen Hafen. Klick für mehr.
+          </p>
+        </div>
+        <div class="map-frame">
+          <div id="map" class="map"></div>
+        </div>
       </section>
 
       <!-- Tag-für-Tag-Detailansicht -->
-      <section class="section" aria-labelledby="days-title">
-        <h2 class="section__title" id="days-title">Tag für Tag</h2>
+      <section class="section reveal" aria-labelledby="days-title">
+        <div class="section__head">
+          <span class="section__kicker">03 — Im Detail</span>
+          <h2 class="section__title" id="days-title">Tag für Tag</h2>
+          <p class="section__hint">Vorhersage und Hafeninfos für jeden Reisetag.</p>
+        </div>
         <div class="day-grid" id="day-grid">
           <!-- per JS gefüllt -->
         </div>
