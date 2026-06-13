@@ -146,6 +146,7 @@ function extractDay(day, result) {
  * Karte
  * -------------------------------------------------------------------- */
 let map;
+let routeBounds;
 const markers = {};
 
 function initMap() {
@@ -165,7 +166,25 @@ function initMap() {
     dashArray: "6 8",
   }).addTo(map);
 
-  map.fitBounds(L.latLngBounds(route).pad(0.15));
+  routeBounds = L.latLngBounds(route);
+  fitRoute();
+
+  // Nach dem Layout neu einpassen, damit der Zoom genau auf die Route sitzt.
+  setTimeout(() => {
+    map.invalidateSize();
+    fitRoute();
+  }, 250);
+  window.addEventListener("resize", () => {
+    map.invalidateSize();
+    fitRoute();
+  });
+}
+
+// Zoomt die Karte exakt auf die Route (knappe Pixel-Ränder statt großzügigem Puffer).
+function fitRoute() {
+  if (map && routeBounds) {
+    map.fitBounds(routeBounds, { padding: [34, 34], maxZoom: 9 });
+  }
 }
 
 function renderMarkers(byDay) {
@@ -245,6 +264,7 @@ function renderStrip(byDay) {
     });
     el.appendChild(btn);
   });
+  refreshScrollShadows();
 }
 
 /* ----------------------------------------------------------------------
@@ -272,6 +292,7 @@ function renderDays(byDay) {
 
     grid.appendChild(card);
   });
+  refreshScrollShadows();
 }
 
 function headHtml(day, w, cond) {
@@ -330,7 +351,9 @@ function metricsHtml(w) {
 
 function hoursHtml(w) {
   if (!w || !w.ok || !w.hours || !w.hours.length) return "";
-  let html = `<p class="hours__title">Während des Aufenthalts</p><div class="hours">`;
+  let html =
+    `<p class="hours__title">Während des Aufenthalts</p>` +
+    `<div class="scroll-wrap"><div class="hours scroller">`;
   w.hours.forEach((h) => {
     const c = wmo(h.code);
     html +=
@@ -339,7 +362,7 @@ function hoursHtml(w) {
       `<div class="hour__temp">${h.temp}°</div>` +
       `<div>${h.precipProb != null ? h.precipProb + "%" : ""}</div></div>`;
   });
-  html += `</div>`;
+  html += `</div></div>`;
   return html;
 }
 
@@ -355,6 +378,74 @@ function aboutHtml(day) {
       `</ul>`;
   }
   return html;
+}
+
+/* ----------------------------------------------------------------------
+ * Scroll-Schatten: zeigt an jedem horizontal scrollbaren Bereich an,
+ * dass es links/rechts weitergeht.
+ * -------------------------------------------------------------------- */
+function updateShadow(wrap, sc) {
+  const max = sc.scrollWidth - sc.clientWidth;
+  wrap.classList.toggle("shadow-left", sc.scrollLeft > 2);
+  wrap.classList.toggle("shadow-right", sc.scrollLeft < max - 2);
+}
+
+function refreshScrollShadows() {
+  document.querySelectorAll(".scroll-wrap").forEach((wrap) => {
+    const sc = wrap.querySelector(".scroller");
+    if (!sc) return;
+    if (!wrap.dataset.shadowBound) {
+      sc.addEventListener("scroll", () => updateShadow(wrap, sc), { passive: true });
+      wrap.dataset.shadowBound = "1";
+    }
+    updateShadow(wrap, sc);
+  });
+}
+
+window.addEventListener("resize", refreshScrollShadows);
+
+/* ----------------------------------------------------------------------
+ * Schiffsbild-Fallback: wenn das Foto nicht lädt, eine SVG-Illustration
+ * eines Kreuzfahrtschiffs einsetzen, damit die Seite immer hübsch bleibt.
+ * -------------------------------------------------------------------- */
+function shipImageFallback(img) {
+  img.onerror = null; // Endlosschleife vermeiden
+  img.src =
+    "data:image/svg+xml;utf8," +
+    encodeURIComponent(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 320">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#6fb7df"/><stop offset="1" stop-color="#cfeaf7"/>
+          </linearGradient>
+          <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#1d6fa5"/><stop offset="1" stop-color="#0b3d5c"/>
+          </linearGradient>
+        </defs>
+        <rect width="1280" height="320" fill="url(#sky)"/>
+        <rect y="210" width="1280" height="110" fill="url(#sea)"/>
+        <g transform="translate(340,86)">
+          <rect x="0" y="70" width="600" height="60" rx="10" fill="#0b3d5c"/>
+          <path d="M0 130 L600 130 L560 168 L40 168 Z" fill="#0b3d5c"/>
+          <rect x="40" y="34" width="470" height="40" rx="8" fill="#fff"/>
+          <rect x="90" y="2" width="330" height="36" rx="8" fill="#fff"/>
+          <g fill="#6fb7df">
+            <rect x="60" y="46" width="18" height="18" rx="3"/><rect x="92" y="46" width="18" height="18" rx="3"/>
+            <rect x="124" y="46" width="18" height="18" rx="3"/><rect x="156" y="46" width="18" height="18" rx="3"/>
+            <rect x="188" y="46" width="18" height="18" rx="3"/><rect x="220" y="46" width="18" height="18" rx="3"/>
+            <rect x="252" y="46" width="18" height="18" rx="3"/><rect x="284" y="46" width="18" height="18" rx="3"/>
+            <rect x="316" y="46" width="18" height="18" rx="3"/><rect x="348" y="46" width="18" height="18" rx="3"/>
+            <rect x="380" y="46" width="18" height="18" rx="3"/><rect x="412" y="46" width="18" height="18" rx="3"/>
+            <rect x="444" y="46" width="18" height="18" rx="3"/><rect x="476" y="46" width="18" height="18" rx="3"/>
+          </g>
+          <rect x="360" y="-44" width="70" height="52" rx="8" fill="#1d6fa5"/>
+          <rect x="0" y="86" width="600" height="14" fill="#1d6fa5"/>
+        </g>
+        <text x="640" y="300" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="20" opacity="0.9">Mein Schiff 3 (Illustration)</text>
+      </svg>`
+    );
+  const cap = document.getElementById("ship-cap");
+  if (cap) cap.innerHTML = "<strong>Mein Schiff 3</strong> · Illustration (Foto nicht verfügbar)";
 }
 
 /* ----------------------------------------------------------------------

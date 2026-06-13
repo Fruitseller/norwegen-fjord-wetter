@@ -33,14 +33,37 @@
     </header>
 
     <main class="container">
+      <!-- Schiffsbild (lädt von Wikimedia Commons; fällt bei Fehler auf eine
+           Illustration zurück, damit die Seite immer hübsch bleibt) -->
+      <figure class="ship" id="ship">
+        <img
+          class="ship__img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Mein_Schiff_3_leaving_Kiel.JPG/1280px-Mein_Schiff_3_leaving_Kiel.JPG"
+          alt="Kreuzfahrtschiff Mein Schiff 3"
+          loading="lazy"
+          onerror="shipImageFallback(this)"
+        />
+        <figcaption class="ship__cap" id="ship-cap">
+          <strong>Mein Schiff 3</strong> · Foto:
+          <a
+            href="https://commons.wikimedia.org/wiki/File:Mein_Schiff_3_leaving_Kiel.JPG"
+            target="_blank"
+            rel="noopener"
+            >Wikimedia Commons</a
+          >
+        </figcaption>
+      </figure>
+
       <!-- Wetter-Schnellüberblick: ganze Woche auf einen Blick -->
       <section class="section" aria-labelledby="overview-title">
         <h2 class="section__title" id="overview-title">Wetter auf einen Blick</h2>
         <p class="section__hint">
           Die ganze Reise im Überblick – tippe auf einen Tag für Details.
         </p>
-        <div class="weather-strip" id="weather-strip">
-          <!-- per JS gefüllt -->
+        <div class="scroll-wrap">
+          <div class="weather-strip scroller" id="weather-strip">
+            <!-- per JS gefüllt -->
+          </div>
         </div>
       </section>
 
@@ -69,7 +92,13 @@
         (CC BY 4.0) · Karte von
         <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener"
           >OpenStreetMap</a
-        >-Mitwirkenden.
+        >-Mitwirkenden · Schiffsfoto:
+        <a
+          href="https://commons.wikimedia.org/wiki/File:Mein_Schiff_3_leaving_Kiel.JPG"
+          target="_blank"
+          rel="noopener"
+          >Wikimedia Commons</a
+        >.
       </p>
       <p class="footer__note">
         Private, inoffizielle Übersichtsseite – keine offizielle Seite von TUI Cruises /

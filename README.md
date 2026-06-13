@@ -17,7 +17,12 @@ einen Blick klar ist, **wann welches Wetter** ist.
 - **Wochenüberblick** – alle 8 Tage als Wetterstreifen, farblich nach
   Wetterlage codiert (Sonne, Wolken, Regen, …) für schnelle Erkennbarkeit.
 - **Interaktive Karte** (Leaflet + OpenStreetMap) mit der Reiseroute und einem
-  Marker je Hafen, der direkt Symbol und Temperatur anzeigt.
+  Marker je Hafen, der direkt Symbol und Temperatur anzeigt – exakt auf die
+  Route gezoomt.
+- **Schiffsbild** der Mein Schiff 3 (Wikimedia Commons) mit automatischer
+  Illustrations-Rückfallebene, falls das Foto nicht lädt.
+- **Scroll-Schatten** als dezenter Indikator an allen horizontal scrollbaren
+  Bereichen (Wochenstreifen, Stundenvorhersage).
 - **Tag-für-Tag-Detailkarten** mit Liegezeiten (Ankunft / Alle an Bord /
   Abfahrt), Höchst-/Tiefsttemperatur, Regenwahrscheinlichkeit, Wind,
   Niederschlag, einer **Stundenvorhersage für die Zeit im Hafen** sowie den
@@ -37,7 +42,8 @@ Es wird **eine einzige** Multi-Standort-Anfrage über den gesamten Reisezeitraum
 gestellt. Liegt das Reisedatum außerhalb des 16-Tage-Vorhersagefensters, zeigt
 die jeweilige Karte „Keine Vorhersage verfügbar".
 
-Daten © Open-Meteo (CC BY 4.0) · Karte © OpenStreetMap-Mitwirkende.
+Daten © Open-Meteo (CC BY 4.0) · Karte © OpenStreetMap-Mitwirkende ·
+Schiffsfoto © [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Mein_Schiff_3_leaving_Kiel.JPG).
 
 ## 🗂️ Aufbau
 
