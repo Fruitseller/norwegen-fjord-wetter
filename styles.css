@@ -154,23 +154,35 @@ a {
 .scroll-wrap::after {
   content: "";
   position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 34px;
+  top: 4px;
+  bottom: 4px;
+  width: 48px;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.18s ease;
+  transition: opacity 0.3s ease;
   z-index: 3;
 }
 
+/* Weicher, elliptischer Rand-Schatten: in der Mitte am stärksten,
+   nach oben/unten und nach innen sanft auslaufend. */
 .scroll-wrap::before {
   left: 0;
-  background: linear-gradient(to right, rgba(11, 61, 92, 0.22), rgba(11, 61, 92, 0));
+  background: radial-gradient(
+    20px 75% at left center,
+    rgba(11, 61, 92, 0.3),
+    rgba(11, 61, 92, 0.12) 45%,
+    rgba(11, 61, 92, 0) 75%
+  );
 }
 
 .scroll-wrap::after {
   right: 0;
-  background: linear-gradient(to left, rgba(11, 61, 92, 0.22), rgba(11, 61, 92, 0));
+  background: radial-gradient(
+    20px 75% at right center,
+    rgba(11, 61, 92, 0.3),
+    rgba(11, 61, 92, 0.12) 45%,
+    rgba(11, 61, 92, 0) 75%
+  );
 }
 
 .scroll-wrap.shadow-left::before {
