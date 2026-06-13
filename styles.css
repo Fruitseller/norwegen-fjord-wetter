@@ -154,34 +154,31 @@ a {
 .scroll-wrap::after {
   content: "";
   position: absolute;
-  top: 4px;
-  bottom: 4px;
-  width: 48px;
+  top: 6px;
+  bottom: 6px;
+  width: 36px;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.3s ease;
   z-index: 3;
 }
 
-/* Weicher, elliptischer Rand-Schatten: in der Mitte am stärksten,
-   nach oben/unten und nach innen sanft auslaufend. */
+/* Sehr dezenter, weicher Rand-Schatten – gibt nur einen Hauch Tiefe. */
 .scroll-wrap::before {
   left: 0;
   background: radial-gradient(
-    20px 75% at left center,
-    rgba(11, 61, 92, 0.3),
-    rgba(11, 61, 92, 0.12) 45%,
-    rgba(11, 61, 92, 0) 75%
+    15px 65% at left center,
+    rgba(11, 61, 92, 0.1),
+    rgba(11, 61, 92, 0) 70%
   );
 }
 
 .scroll-wrap::after {
   right: 0;
   background: radial-gradient(
-    20px 75% at right center,
-    rgba(11, 61, 92, 0.3),
-    rgba(11, 61, 92, 0.12) 45%,
-    rgba(11, 61, 92, 0) 75%
+    15px 65% at right center,
+    rgba(11, 61, 92, 0.1),
+    rgba(11, 61, 92, 0) 70%
   );
 }
 
@@ -191,6 +188,35 @@ a {
 
 .scroll-wrap.shadow-right::after {
   opacity: 1;
+}
+
+/* Zweiter, eleganter Hinweis: den Inhalt genau an der scrollbaren Kante
+   sanft ausblenden (nur dort, wo es noch weitergeht). */
+.scroll-wrap.shadow-left:not(.shadow-right) .scroller {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 36px);
+  mask-image: linear-gradient(to right, transparent, #000 36px);
+}
+
+.scroll-wrap.shadow-right:not(.shadow-left) .scroller {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent);
+}
+
+.scroll-wrap.shadow-left.shadow-right .scroller {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 36px,
+    #000 calc(100% - 36px),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 36px,
+    #000 calc(100% - 36px),
+    transparent
+  );
 }
 
 /* ---------- Wetterstreifen (Wochenüberblick) ---------- */
