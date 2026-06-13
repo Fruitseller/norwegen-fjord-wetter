@@ -1,0 +1,487 @@
+:root {
+  --c-deep: #0b3d5c;
+  --c-sea: #1d6fa5;
+  --c-sky: #6fb7df;
+  --c-foam: #e8f4fb;
+  --c-ink: #102a3a;
+  --c-muted: #5b7689;
+  --c-card: #ffffff;
+  --c-bg: #f3f8fc;
+  --c-line: #dbe7f0;
+
+  /* Wetter-Akzentfarben (für die farbliche Erkennbarkeit) */
+  --w-sun: #ffb703;
+  --w-partly: #6bb7e0;
+  --w-cloud: #8fa3b3;
+  --w-rain: #3a7bd5;
+  --w-storm: #6c5ce7;
+  --w-snow: #9ec9e8;
+  --w-fog: #adb9c4;
+
+  --radius: 16px;
+  --shadow: 0 6px 24px rgba(11, 61, 92, 0.1);
+  --shadow-sm: 0 2px 8px rgba(11, 61, 92, 0.08);
+  --font: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--c-ink);
+  background: var(--c-bg);
+  line-height: 1.55;
+}
+
+a {
+  color: var(--c-sea);
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  background: linear-gradient(160deg, var(--c-deep) 0%, var(--c-sea) 55%, var(--c-sky) 130%);
+  color: #fff;
+  padding: 56px 20px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 40px;
+  background: var(--c-bg);
+  clip-path: polygon(0 100%, 100% 100%, 100% 35%, 75% 60%, 50% 30%, 25% 60%, 0 35%);
+  opacity: 0.5;
+}
+
+.hero__inner {
+  max-width: 760px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.hero__eyebrow {
+  margin: 0 0 8px;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.hero__title {
+  margin: 0;
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.hero__subtitle {
+  margin: 10px 0 0;
+  font-size: clamp(1rem, 2.4vw, 1.25rem);
+  opacity: 0.95;
+}
+
+.hero__updated {
+  margin: 18px 0 0;
+  font-size: 0.82rem;
+  opacity: 0.8;
+}
+
+/* ---------- Layout ---------- */
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 8px 20px 40px;
+}
+
+.section {
+  margin: 40px 0;
+}
+
+.section__title {
+  font-size: 1.5rem;
+  margin: 0 0 4px;
+  color: var(--c-deep);
+}
+
+.section__hint {
+  margin: 0 0 18px;
+  color: var(--c-muted);
+  font-size: 0.95rem;
+}
+
+/* ---------- Wetterstreifen (Wochenüberblick) ---------- */
+.weather-strip {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(116px, 1fr);
+  gap: 12px;
+  overflow-x: auto;
+  padding: 4px 2px 14px;
+  scroll-snap-type: x proximity;
+}
+
+.wcard {
+  scroll-snap-align: start;
+  background: var(--c-card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 14px 10px;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  border-top: 5px solid var(--w-cloud);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  font-family: inherit;
+  color: inherit;
+}
+
+.wcard:hover,
+.wcard:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+  outline: none;
+}
+
+.wcard__day {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+}
+
+.wcard__name {
+  font-weight: 700;
+  font-size: 0.92rem;
+  margin: 2px 0 6px;
+  color: var(--c-deep);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wcard__icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.wcard__temp {
+  margin-top: 6px;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.wcard__temp small {
+  font-weight: 500;
+  color: var(--c-muted);
+}
+
+.wcard__rain {
+  font-size: 0.74rem;
+  color: var(--c-rain, var(--c-sea));
+  margin-top: 2px;
+  min-height: 1.1em;
+}
+
+/* ---------- Karte ---------- */
+.map {
+  height: 460px;
+  width: 100%;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  z-index: 0;
+}
+
+.leaflet-marker-icon.port-pin {
+  background: transparent;
+  border: none;
+}
+
+.pin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateY(-6px);
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+}
+
+.pin__bubble {
+  background: #fff;
+  border: 2px solid var(--c-sea);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--c-deep);
+}
+
+.pin__bubble--sea {
+  border-style: dashed;
+  border-color: var(--c-muted);
+  opacity: 0.92;
+}
+
+.pin__stem {
+  width: 2px;
+  height: 8px;
+  background: var(--c-sea);
+}
+
+/* ---------- Tageskarten ---------- */
+.day-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 18px;
+}
+
+.day {
+  background: var(--c-card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  border-left: 6px solid var(--w-cloud);
+  display: flex;
+  flex-direction: column;
+}
+
+.day--sea {
+  border-left-style: dashed;
+}
+
+.day__head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--c-line);
+}
+
+.day__icon {
+  font-size: 2.6rem;
+  line-height: 1;
+}
+
+.day__heading {
+  flex: 1;
+  min-width: 0;
+}
+
+.day__date {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+}
+
+.day__name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--c-deep);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.day__cond {
+  font-size: 0.9rem;
+  color: var(--c-muted);
+}
+
+.day__temps {
+  text-align: right;
+}
+
+.day__temp-max {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--c-deep);
+}
+
+.day__temp-min {
+  font-size: 0.85rem;
+  color: var(--c-muted);
+}
+
+.day__times {
+  display: flex;
+  gap: 1px;
+  background: var(--c-line);
+}
+
+.day__time {
+  flex: 1;
+  background: var(--c-foam);
+  padding: 10px 6px;
+  text-align: center;
+}
+
+.day__time-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--c-muted);
+}
+
+.day__time-value {
+  font-weight: 700;
+  color: var(--c-deep);
+}
+
+.day__metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--c-line);
+}
+
+.metric {
+  background: #fff;
+  padding: 10px 6px;
+  text-align: center;
+}
+
+.metric__label {
+  display: block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--c-muted);
+}
+
+.metric__value {
+  font-weight: 700;
+  color: var(--c-deep);
+  font-size: 0.95rem;
+}
+
+.day__about {
+  padding: 14px 18px 18px;
+  font-size: 0.9rem;
+  color: var(--c-ink);
+  margin: 0;
+}
+
+.day__info {
+  padding: 0 18px 16px;
+  margin: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.day__info li {
+  font-size: 0.78rem;
+  background: var(--c-foam);
+  color: var(--c-sea);
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+.day__loading {
+  padding: 14px 18px;
+  color: var(--c-muted);
+  font-size: 0.9rem;
+}
+
+/* In-Port-Stundenleiste */
+.hours {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 12px 18px 4px;
+}
+
+.hours__title {
+  padding: 14px 18px 0;
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--c-muted);
+}
+
+.hour {
+  flex: 0 0 auto;
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--c-muted);
+  min-width: 44px;
+}
+
+.hour__icon {
+  font-size: 1.2rem;
+}
+
+.hour__temp {
+  font-weight: 700;
+  color: var(--c-deep);
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  text-align: center;
+  padding: 28px 20px 40px;
+  color: var(--c-muted);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--c-line);
+  background: #fff;
+}
+
+.footer__note {
+  font-size: 0.78rem;
+  opacity: 0.85;
+  max-width: 640px;
+  margin: 8px auto 0;
+}
+
+/* ---------- Popup ---------- */
+.leaflet-popup-content {
+  margin: 12px 14px;
+}
+
+.popup__name {
+  font-weight: 800;
+  color: var(--c-deep);
+  font-size: 1.05rem;
+}
+
+.popup__row {
+  font-size: 0.86rem;
+  color: var(--c-muted);
+}
+
+.popup__big {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--c-deep);
+}
+
+@media (max-width: 560px) {
+  .map {
+    height: 360px;
+  }
+  .hero {
+    padding: 40px 18px 36px;
+  }
+}

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Norwegens Fjorde · Wetter zur Reise · Mein Schiff</title>
+    <meta
+      name="description"
+      content="Wetterübersicht für die Mein-Schiff-Reise Norwegens Fjorde (21.–28. Juni 2026) mit Karte und Tagesvorhersage für jeden Hafen."
+    />
+
+    <!-- Leaflet (Karte) -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛴️</text></svg>"
+    />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__inner">
+        <p class="hero__eyebrow">⛴️ Mein Schiff 3 · Reise 4476611</p>
+        <h1 class="hero__title">Norwegens Fjorde</h1>
+        <p class="hero__subtitle" id="hero-subtitle"></p>
+        <p class="hero__updated" id="last-updated">Wetterdaten werden geladen …</p>
+      </div>
+    </header>
+
+    <main class="container">
+      <!-- Wetter-Schnellüberblick: ganze Woche auf einen Blick -->
+      <section class="section" aria-labelledby="overview-title">
+        <h2 class="section__title" id="overview-title">Wetter auf einen Blick</h2>
+        <p class="section__hint">
+          Die ganze Reise im Überblick – tippe auf einen Tag für Details.
+        </p>
+        <div class="weather-strip" id="weather-strip">
+          <!-- per JS gefüllt -->
+        </div>
+      </section>
+
+      <!-- Karte mit der Route und den Häfen -->
+      <section class="section" aria-labelledby="map-title">
+        <h2 class="section__title" id="map-title">Route &amp; Häfen</h2>
+        <p class="section__hint">
+          Die Marker zeigen das Wetter am jeweiligen Hafen. Klick für mehr.
+        </p>
+        <div id="map" class="map"></div>
+      </section>
+
+      <!-- Tag-für-Tag-Detailansicht -->
+      <section class="section" aria-labelledby="days-title">
+        <h2 class="section__title" id="days-title">Tag für Tag</h2>
+        <div class="day-grid" id="day-grid">
+          <!-- per JS gefüllt -->
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>
+        Wetterdaten von
+        <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>
+        (CC BY 4.0) · Karte von
+        <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener"
+          >OpenStreetMap</a
+        >-Mitwirkenden.
+      </p>
+      <p class="footer__note">
+        Private, inoffizielle Übersichtsseite – keine offizielle Seite von TUI Cruises /
+        Mein Schiff. Zeiten gemäß Reiseplan, ohne Gewähr.
+      </p>
+    </footer>
+
+    <!-- Leaflet JS -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
