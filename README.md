@@ -1,7 +1,7 @@
 # ⛴️ Norwegens Fjorde – Wetter zur Reise
 
 Eine kleine, hübsche Übersichtsseite zur **Mein Schiff 3**-Reise *„Norwegens
-Fjorde"* (21. Juni – 1. Juli 2026). Sie zeigt die komplette Route auf
+Fjorde"* (21. Juni – 5. Juli 2026). Sie zeigt die komplette Route auf
 einer Karte und für **jeden Hafen den aktuellen Wetterbericht** – damit auf
 einen Blick klar ist, **wann welches Wetter** ist.
 
