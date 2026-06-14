@@ -76,11 +76,29 @@ function round(n) {
 /* ----------------------------------------------------------------------
  * Wetterabruf (eine einzige Multi-Standort-Anfrage für alle Häfen)
  * -------------------------------------------------------------------- */
+// Lokales Datum (heute + n Tage) als ISO-String "YYYY-MM-DD".
+function isoPlusDays(n) {
+  const d = new Date();
+  d.setHours(12, 0, 0, 0);
+  d.setDate(d.getDate() + n);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+    d.getDate()
+  ).padStart(2, "0")}`;
+}
+
 async function fetchWeather() {
   const lats = TRIP.days.map((d) => d.lat).join(",");
   const lons = TRIP.days.map((d) => d.lon).join(",");
-  const start = TRIP.days[0].date;
-  const end = TRIP.days[TRIP.days.length - 1].date;
+
+  // Open-Meteo liefert nur rund 16 Tage Vorhersage. Liegt das Reiseende weiter
+  // in der Zukunft, lehnt die API sonst die GESAMTE Anfrage ab – wir begrenzen
+  // den Bereich daher auf das Vorhersagefenster. Tage dahinter zeigen
+  // "Keine Vorhersage verfügbar" und rücken automatisch nach.
+  const horizon = isoPlusDays(14);
+  const tripStart = TRIP.days[0].date;
+  const tripEnd = TRIP.days[TRIP.days.length - 1].date;
+  const start = tripStart > horizon ? horizon : tripStart;
+  const end = tripEnd > horizon ? horizon : tripEnd;
 
   const url =
     "https://api.open-meteo.com/v1/forecast" +
