@@ -193,7 +193,6 @@ const TRIP = {
         title: "Besuch der IceBar und Spaziergang durch Bergen",
         code: "NOBGO019N",
         time: "14:00 – 17:30",
-        participants: ["Petra Grossmann", "Hans-Gerd Nilges"],
       },
     },
     {
