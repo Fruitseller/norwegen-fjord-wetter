@@ -1,7 +1,7 @@
 # ⛴️ Norwegens Fjorde – Wetter zur Reise
 
 Eine kleine, hübsche Übersichtsseite zur **Mein Schiff 3**-Reise *„Norwegens
-Fjorde"* (Reise 4476611, 21.–28. Juni 2026). Sie zeigt die komplette Route auf
+Fjorde"* (21. Juni – 1. Juli 2026). Sie zeigt die komplette Route auf
 einer Karte und für **jeden Hafen den aktuellen Wetterbericht** – damit auf
 einen Blick klar ist, **wann welches Wetter** ist.
 
@@ -14,7 +14,7 @@ einen Blick klar ist, **wann welches Wetter** ist.
 
 ## ✨ Funktionen
 
-- **Wochenüberblick** – alle 8 Tage als Wetterstreifen, farblich nach
+- **Wochenüberblick** – alle Reisetage als Wetterstreifen, farblich nach
   Wetterlage codiert (Sonne, Wolken, Regen, …) für schnelle Erkennbarkeit.
 - **Interaktive Karte** (Leaflet + OpenStreetMap) mit der Reiseroute und einem
   Marker je Hafen, der direkt Symbol und Temperatur anzeigt – exakt auf die

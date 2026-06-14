@@ -1,5 +1,5 @@
 /**
- * Reisedaten der Mein-Schiff-Reise "Norwegens Fjorde" (Reise 4476611).
+ * Reisedaten der Mein-Schiff-Reise "Norwegens Fjorde".
  *
  * Quelle: Reiseroute / Hafeninformationen aus "Meine Reisen".
  * Die Koordinaten dienen sowohl der Karte als auch der Wetterabfrage.
@@ -9,10 +9,9 @@
  *   "sea"  = Seetag (ungefähre Position auf See, Wetter nur näherungsweise)
  */
 const TRIP = {
-  id: "4476611",
   title: "Norwegens Fjorde",
   ship: "Mein Schiff 3",
-  subtitle: "Mein Schiff 3 · 8 Tage · 21.–28. Juni 2026 · ab/bis Bremerhaven",
+  subtitle: "Mein Schiff 3 · 21. Juni – 1. Juli 2026 · ab Bremerhaven",
   year: 2026,
   // Reihenfolge der Häfen für die Routen-Linie auf der Karte
   days: [
@@ -158,7 +157,62 @@ const TRIP = {
       currency: "€",
       tz: "GMT+1",
       about:
-        "Ankunft und Ausschiffung in Bremerhaven. Erleben Sie zum Abschluss noch das Klimahaus, das Schifffahrtsmuseum oder das Deutsche Auswandererhaus.",
+        "Zwischenstopp in Bremerhaven: Erleben Sie noch einmal das Klimahaus, das Schifffahrtsmuseum oder das Deutsche Auswandererhaus, bevor es zurück Richtung norwegische Fjorde geht.",
+    },
+    {
+      day: 9,
+      date: "2026-06-29",
+      weekday: "Mo",
+      type: "sea",
+      name: "Seetag",
+      // Ungefähre Position in der Nordsee zwischen Bremerhaven und Bergen
+      lat: 57.5,
+      lon: 4.5,
+      approx: true,
+      about: "Entdecken Sie unser vielfältiges Programm an Bord.",
+    },
+    {
+      day: 10,
+      date: "2026-06-30",
+      weekday: "Di",
+      type: "port",
+      name: "Bergen",
+      country: "Norwegen",
+      flag: "🇳🇴",
+      lat: 60.3913,
+      lon: 5.3221,
+      portName: "Bergen",
+      arrival: "09:00",
+      aboard: null,
+      departure: "18:00",
+      language: "Norwegisch",
+      currency: "nkr",
+      tz: "GMT+1",
+      // Gebuchter Ausflug laut Reiseplan
+      excursion: {
+        title: "Besuch der IceBar und Spaziergang durch Bergen",
+        code: "NOBGO019N",
+        time: "14:00 – 17:30",
+        participants: ["Petra Grossmann", "Hans-Gerd Nilges"],
+      },
+    },
+    {
+      day: 11,
+      date: "2026-07-01",
+      weekday: "Mi",
+      type: "port",
+      name: "Stavanger",
+      country: "Norwegen",
+      flag: "🇳🇴",
+      lat: 58.9700,
+      lon: 5.7331,
+      portName: "Stavanger",
+      arrival: "08:00",
+      aboard: null,
+      departure: "19:00",
+      language: "Norwegisch",
+      currency: "nkr",
+      tz: "GMT+1",
     },
   ],
 };

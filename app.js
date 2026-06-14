@@ -288,6 +288,7 @@ function renderDays(byDay) {
       timesHtml(day) +
       metricsHtml(w) +
       hoursHtml(w) +
+      excursionHtml(day) +
       aboutHtml(day);
 
     grid.appendChild(card);
@@ -366,8 +367,28 @@ function hoursHtml(w) {
   return html;
 }
 
+// Gebuchter Ausflug für den Tag (sofern in den Reisedaten hinterlegt).
+function excursionHtml(day) {
+  const ex = day.excursion;
+  if (!ex) return "";
+  const code = ex.code ? `<span class="excursion__code">${ex.code}</span>` : "";
+  const time = ex.time ? `<div class="excursion__meta">🕐 ${ex.time} Uhr</div>` : "";
+  const people =
+    ex.participants && ex.participants.length
+      ? `<div class="excursion__meta">👤 ${ex.participants.join(", ")}</div>`
+      : "";
+  return (
+    `<div class="excursion">` +
+    `<div class="excursion__badge">Gebuchter Ausflug</div>` +
+    `<div class="excursion__title">${ex.title}${code}</div>` +
+    time +
+    people +
+    `</div>`
+  );
+}
+
 function aboutHtml(day) {
-  let html = `<p class="day__about">${day.about}</p>`;
+  let html = day.about ? `<p class="day__about">${day.about}</p>` : "";
   if (day.type === "port") {
     html +=
       `<ul class="day__info">` +

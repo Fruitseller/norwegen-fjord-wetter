@@ -775,6 +775,45 @@ a:hover {
   font-variant-numeric: tabular-nums;
 }
 
+/* Gebuchter Ausflug */
+.excursion {
+  margin: 16px 22px 0;
+  padding: 14px 16px;
+  background: rgba(255, 196, 107, 0.08);
+  border: 1px solid rgba(255, 196, 107, 0.22);
+  border-radius: var(--radius-sm);
+}
+
+.excursion__badge {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-sun);
+  margin-bottom: 6px;
+}
+
+.excursion__title {
+  font-weight: 700;
+  color: var(--c-foam);
+  font-size: 0.96rem;
+  line-height: 1.3;
+}
+
+.excursion__code {
+  margin-left: 8px;
+  font-weight: 500;
+  font-size: 0.78rem;
+  color: var(--c-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.excursion__meta {
+  font-size: 0.82rem;
+  color: var(--c-mist);
+  margin-top: 4px;
+}
+
 .day__about {
   padding: 16px 22px 18px;
   font-size: 0.9rem;
