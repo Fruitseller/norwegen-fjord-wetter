@@ -576,6 +576,58 @@ a:hover {
   background: var(--c-sun);
 }
 
+/* Zähler-Abzeichen, wenn ein Ort an mehreren Tagen angelaufen wird. */
+.pin__count {
+  font-size: 0.62rem;
+  font-weight: 800;
+  line-height: 1;
+  background: var(--c-sun);
+  color: #0c2236;
+  border-radius: 999px;
+  padding: 2px 5px;
+  margin-left: 2px;
+}
+
+/* Anklickbare Besuchs-Einträge im Sammel-Popup (mehrere Tage am selben Ort). */
+.popup__visit {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--c-line);
+  border-radius: 10px;
+  color: var(--c-foam);
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.popup__visit:hover,
+.popup__visit:focus-visible {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: var(--c-card-hi);
+  outline: none;
+}
+.popup__visit-day {
+  display: block;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--c-sun);
+}
+.popup__visit-times {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--c-mist);
+}
+.popup__visit-weather {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.82rem;
+  color: var(--c-foam);
+  font-variant-numeric: tabular-nums;
+}
+
 /* Leaflet-Popups passend zum dunklen Thema */
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip {

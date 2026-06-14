@@ -206,19 +206,33 @@ function fitRoute() {
 }
 
 function renderMarkers(byDay) {
+  // Tage nach Koordinate gruppieren: Wird derselbe Hafen an mehreren Tagen
+  // angelaufen (z. B. Bremerhaven), liegen die Pins sonst exakt übereinander
+  // und nur der oberste ist anklickbar. Ein Pin pro Ort löst das.
+  const groups = new Map();
   TRIP.days.forEach((day) => {
-    const w = byDay[day.day];
+    const key = `${day.lat},${day.lon}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(day);
+  });
+
+  groups.forEach((days) => {
+    // Für die Blase bevorzugt einen Tag mit vorhandener Vorhersage zeigen.
+    const lead = days.find((d) => byDay[d.day] && byDay[d.day].ok) || days[0];
+    const w = byDay[lead.day];
     const cond = w && w.ok ? wmo(w.code) : null;
     const temp = w && w.ok ? `${w.tmax}°` : "";
-    const icon = cond ? cond.icon : day.type === "sea" ? "⚓" : "📍";
-    const bubbleClass = day.type === "sea" ? "pin__bubble pin__bubble--sea" : "pin__bubble";
+    const isSea = days.every((d) => d.type === "sea");
+    const icon = cond ? cond.icon : isSea ? "⚓" : "📍";
+    const bubbleClass = isSea ? "pin__bubble pin__bubble--sea" : "pin__bubble";
+    const count = days.length > 1 ? `<span class="pin__count">${days.length}×</span>` : "";
 
     const html =
       `<div class="pin"><div class="${bubbleClass}">` +
-      `<span>${icon}</span>${temp ? `<span>${temp}</span>` : ""}` +
+      `<span>${icon}</span>${temp ? `<span>${temp}</span>` : ""}${count}` +
       `</div><div class="pin__stem"></div></div>`;
 
-    const marker = L.marker([day.lat, day.lon], {
+    const marker = L.marker([lead.lat, lead.lon], {
       icon: L.divIcon({
         className: "port-pin",
         html,
@@ -227,12 +241,58 @@ function renderMarkers(byDay) {
       }),
     }).addTo(map);
 
-    marker.bindPopup(popupHtml(day, w));
-    markers[day.day] = marker;
+    marker.bindPopup(popupContent(days, byDay), { minWidth: 200 });
+    // Jeder Tag dieser Gruppe verweist auf denselben Marker (für Strip-Klicks).
+    days.forEach((d) => (markers[d.day] = marker));
   });
 }
 
-function popupHtml(day, w) {
+function visitWeatherText(w) {
+  if (!w || !w.ok) return "Keine Vorhersage verfügbar";
+  const c = wmo(w.code);
+  let t = `${c.icon} ${w.tmax}° / ${w.tmin}°`;
+  if (w.precipProb != null) t += ` · 🌧️ ${w.precipProb}%`;
+  return t;
+}
+
+function popupContent(days, byDay) {
+  // Einzelner Tag: kompakte, klassische Darstellung.
+  if (days.length === 1) return singlePopupHtml(days[0], byDay[days[0].day]);
+
+  // Mehrere Tage am selben Ort: anklickbare Liste, damit jeder Tag erreichbar ist.
+  const wrap = document.createElement("div");
+  const head = document.createElement("div");
+  head.className = "popup__name";
+  head.textContent = days[0].name;
+  wrap.appendChild(head);
+
+  const sub = document.createElement("div");
+  sub.className = "popup__row";
+  sub.textContent = `${days.length}× im Reiseplan – Tag antippen`;
+  wrap.appendChild(sub);
+
+  days.forEach((day) => {
+    const w = byDay[day.day];
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "popup__visit";
+    btn.innerHTML =
+      `<span class="popup__visit-day">Tag ${day.day} · ${formatDate(day.date)}</span>` +
+      (day.type === "port"
+        ? `<span class="popup__visit-times">An ${day.arrival} – Ab ${day.departure} Uhr</span>`
+        : `<span class="popup__visit-times">ungefähre Position auf See</span>`) +
+      `<span class="popup__visit-weather">${visitWeatherText(w)}</span>`;
+    btn.addEventListener("click", () => {
+      const card = document.getElementById("day-" + day.day);
+      if (card) card.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (map) map.closePopup();
+    });
+    wrap.appendChild(btn);
+  });
+  return wrap;
+}
+
+function singlePopupHtml(day, w) {
   const title = day.type === "sea" ? `Seetag (Tag ${day.day})` : day.name;
   let html = `<div class="popup__name">${title}</div>`;
   html += `<div class="popup__row">${formatDate(day.date)}</div>`;
