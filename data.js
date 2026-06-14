@@ -191,7 +191,6 @@ const TRIP = {
       // Gebuchter Ausflug laut Reiseplan
       excursion: {
         title: "Besuch der IceBar und Spaziergang durch Bergen",
-        code: "NOBGO019N",
         time: "14:00 – 17:30",
       },
     },
