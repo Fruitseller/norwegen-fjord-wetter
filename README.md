@@ -27,6 +27,10 @@ einen Blick klar ist, **wann welches Wetter** ist.
   Abfahrt), Höchst-/Tiefsttemperatur, Regenwahrscheinlichkeit, Wind,
   Niederschlag, einer **Stundenvorhersage für die Zeit im Hafen** sowie den
   Hafeninfos (Sprache, Währung, Zeitzone).
+- **Zweitmeinung pro Tag**: Jede Tageskarte verlinkt auf eine **unabhängige
+  Wetterquelle** ([Ventusky](https://www.ventusky.com/)) mit **Ort und Tag
+  bereits vorausgewählt** – ideal zum Gegenchecken der Vorhersage. Ventusky
+  öffnet die Karte direkt, **ohne Cookie-/Consent-Wand**.
 - **Immer aktuell**: Das Wetter wird bei jedem Seitenaufruf live geladen.
 
 ## 🌦️ Wetterdaten
@@ -41,6 +45,12 @@ Die Vorhersage stammt von **[Open-Meteo](https://open-meteo.com/)**:
 Es wird **eine einzige** Multi-Standort-Anfrage über den gesamten Reisezeitraum
 gestellt. Liegt das Reisedatum außerhalb des 16-Tage-Vorhersagefensters, zeigt
 die jeweilige Karte „Keine Vorhersage verfügbar".
+
+Zum Vergleich verlinkt jede Tageskarte zusätzlich auf
+**[Ventusky](https://www.ventusky.com/)** – eine unabhängige Quelle mit eigener
+Modellmischung. Der Link positioniert die Ventusky-Karte per URL-Parameter
+direkt auf Ort und Reisetag (`?p=<lat>;<lon>;<zoom>` und `t=<JJJJMMTT>/<SS>`)
+und kommt ohne Cookie-/Consent-Wand aus.
 
 Daten © Open-Meteo (CC BY 4.0) · Karte © OpenStreetMap-Mitwirkende ·
 Schiffsfoto © [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Mein_Schiff_3_leaving_Kiel.JPG).

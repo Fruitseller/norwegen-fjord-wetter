@@ -367,7 +367,8 @@ function renderDays(byDay) {
       metricsHtml(w) +
       hoursHtml(w) +
       excursionHtml(day) +
-      aboutHtml(day);
+      aboutHtml(day) +
+      compareHtml(day);
 
     grid.appendChild(card);
   });
@@ -477,6 +478,40 @@ function aboutHtml(day) {
       `</ul>`;
   }
   return html;
+}
+
+/* ----------------------------------------------------------------------
+ * Vergleichslink zu einer zweiten, unabhängigen Wetterquelle.
+ *
+ * Open-Meteo liefert die Werte auf dieser Seite – zum Gegenchecken verlinken
+ * wir pro Tag auf Ventusky (eigene Modellmischung, also ein echter zweiter
+ * Blick). Ventusky lädt die Karte direkt, ohne Cookie-/Consent-Wand, und
+ * lässt sich per URL exakt auf Ort und Tag vorpositionieren.
+ * -------------------------------------------------------------------- */
+function ventuskyUrl(day) {
+  // Ventusky-Format: ?p=<lat>;<lon>;<zoom>  ·  t=<JJJJMMTT>/<SS> (Stunde in UTC).
+  const ymd = day.date.replace(/-/g, "");
+  // 12:00 UTC liegt sicher am selben Kalendertag wie die lokale Sommerzeit
+  // (UTC+2) und trifft die Tagesmitte – der Zeitregler steht damit garantiert
+  // auf dem richtigen Reisetag.
+  return (
+    "https://www.ventusky.com/?p=" +
+    `${day.lat};${day.lon};8&l=temperature-2m&t=${ymd}/12`
+  );
+}
+
+function compareHtml(day) {
+  const where = day.type === "sea" ? "Seeposition" : day.name;
+  return (
+    `<div class="day__compare">` +
+    `<a class="compare-link" href="${ventuskyUrl(day)}" target="_blank" rel="noopener"` +
+    ` title="${where} am ${formatDate(day.date)} bei Ventusky vergleichen">` +
+    `<span class="compare-link__icon" aria-hidden="true">🛰️</span>` +
+    `<span class="compare-link__text">Andere Wetterquelle vergleichen` +
+    `<small>Ventusky · ${where} &amp; Tag vorausgewählt</small></span>` +
+    `<span class="compare-link__arrow" aria-hidden="true">↗</span>` +
+    `</a></div>`
+  );
 }
 
 /* ----------------------------------------------------------------------
