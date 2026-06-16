@@ -897,6 +897,61 @@ a:hover {
   font-size: 0.9rem;
 }
 
+/* Vergleichslink zu einer zweiten Wetterquelle (Ventusky).
+   margin-top:auto schiebt den Link an den unteren Kartenrand, sodass er bei
+   unterschiedlich langen Karten in einer Zeile bündig abschließt. */
+.day__compare {
+  margin-top: auto;
+  padding: 14px 22px 18px;
+  border-top: 1px solid var(--c-line-soft);
+}
+
+.compare-link {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(121, 182, 255, 0.08);
+  border: 1px solid rgba(121, 182, 255, 0.2);
+  color: var(--c-foam);
+  text-decoration: none;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+.compare-link:hover,
+.compare-link:focus-visible {
+  background: rgba(121, 182, 255, 0.16);
+  border-color: rgba(121, 182, 255, 0.42);
+  color: var(--c-foam);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.compare-link__icon {
+  font-size: 1.2rem;
+  line-height: 1;
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.35));
+}
+
+.compare-link__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  font-weight: 700;
+  font-size: 0.86rem;
+  line-height: 1.25;
+}
+.compare-link__text small {
+  font-weight: 500;
+  font-size: 0.72rem;
+  color: var(--c-mist);
+}
+
+.compare-link__arrow {
+  font-weight: 700;
+  color: var(--c-aurora-cool);
+}
+
 /* In-Port-Stundenleiste */
 .hours {
   display: flex;
