@@ -9,9 +9,6 @@ einen Blick klar ist, **wann welches Wetter** ist.
 
 **👉 https://fruitseller.github.io/norwegen-fjord-wetter/**
 
-> Hinweis: Die Seite ist erst nach dem ersten erfolgreichen Deployment
-> erreichbar (siehe [Einrichtung](#einrichtung)).
-
 ## ✨ Funktionen
 
 - **Wochenüberblick** – alle Reisetage als Wetterstreifen, farblich nach
