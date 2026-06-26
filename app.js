@@ -100,61 +100,108 @@ async function fetchWeather() {
   const start = tripStart > horizon ? horizon : tripStart;
   const end = tripEnd > horizon ? horizon : tripEnd;
 
-  const url =
+  const defaultUrl =
     "https://api.open-meteo.com/v1/forecast" +
     `?latitude=${lats}&longitude=${lons}` +
     "&daily=weather_code,temperature_2m_max,temperature_2m_min," +
     "precipitation_sum,precipitation_probability_max,wind_speed_10m_max,sunrise,sunset" +
     "&hourly=temperature_2m,weather_code,precipitation_probability" +
     "&wind_speed_unit=kmh&timezone=auto" +
-    "&models=metno_nordic" +
     `&start_date=${start}&end_date=${end}`;
 
-  const res = await fetch(url);
-  if (!res.ok) throw new Error("Open-Meteo antwortete mit Status " + res.status);
-  let data = await res.json();
-  // Bei mehreren Koordinaten liefert Open-Meteo ein Array – ansonsten ein Objekt.
-  if (!Array.isArray(data)) data = [data];
+  // MetNo Nordic (selbes Modell wie yr.no) für die ersten ~62 h: liefert
+  // genauere Temperaturen, Wind und Wettercodes für Norwegen, aber kein
+  // precipitation_probability (deterministisches Modell) und keinen langen
+  // Horizont. Regenwahrscheinlichkeit kommt daher immer vom Default-Ensemble.
+  const nordicEnd = isoPlusDays(2);
+  const nordicUrl =
+    start <= nordicEnd
+      ? "https://api.open-meteo.com/v1/forecast" +
+        `?latitude=${lats}&longitude=${lons}` +
+        "&daily=weather_code,temperature_2m_max,temperature_2m_min," +
+        "precipitation_sum,wind_speed_10m_max,sunrise,sunset" +
+        "&hourly=temperature_2m,weather_code" +
+        "&wind_speed_unit=kmh&timezone=auto" +
+        "&models=metno_nordic" +
+        `&start_date=${start}&end_date=${nordicEnd}`
+      : null;
+
+  const [defaultRes, nordicRes] = await Promise.all([
+    fetch(defaultUrl),
+    nordicUrl ? fetch(nordicUrl) : Promise.resolve(null),
+  ]);
+
+  if (!defaultRes.ok) throw new Error("Open-Meteo antwortete mit Status " + defaultRes.status);
+
+  let defaultData = await defaultRes.json();
+  if (!Array.isArray(defaultData)) defaultData = [defaultData];
+
+  let nordicData = null;
+  if (nordicRes && nordicRes.ok) {
+    nordicData = await nordicRes.json();
+    if (!Array.isArray(nordicData)) nordicData = [nordicData];
+  }
 
   const byDay = {};
   TRIP.days.forEach((day, i) => {
-    byDay[day.day] = extractDay(day, data[i]);
+    byDay[day.day] = extractDay(day, defaultData[i], nordicData ? nordicData[i] : null);
   });
   return byDay;
 }
 
-function extractDay(day, result) {
-  if (!result || !result.daily) return { ok: false };
-  const daily = result.daily;
-  const di = daily.time.indexOf(day.date);
-  if (di < 0 || daily.temperature_2m_max[di] == null) return { ok: false };
+function extractDay(day, defResult, nordicResult) {
+  if (!defResult || !defResult.daily) return { ok: false };
+  const defDaily = defResult.daily;
+  const di = defDaily.time.indexOf(day.date);
+  if (di < 0 || defDaily.temperature_2m_max[di] == null) return { ok: false };
+
+  // MetNo Nordic als primäre Quelle, sofern für diesen Tag verfügbar
+  const nd = nordicResult?.daily;
+  const ni = nd ? nd.time.indexOf(day.date) : -1;
+  const useNordic = ni >= 0 && nd.temperature_2m_max[ni] != null;
+  const sd = useNordic ? nd : defDaily; // Quelldaten täglich
+  const si = useNordic ? ni : di;       // Quellindex
 
   const out = {
     ok: true,
-    code: daily.weather_code[di],
-    tmax: round(daily.temperature_2m_max[di]),
-    tmin: round(daily.temperature_2m_min[di]),
-    precipProb: daily.precipitation_probability_max?.[di] ?? null,
-    precipSum: daily.precipitation_sum?.[di] ?? null,
-    wind: round(daily.wind_speed_10m_max?.[di]),
-    sunrise: daily.sunrise?.[di] ?? null,
-    sunset: daily.sunset?.[di] ?? null,
+    code: sd.weather_code[si],
+    tmax: round(sd.temperature_2m_max[si]),
+    tmin: round(sd.temperature_2m_min[si]),
+    precipProb: defDaily.precipitation_probability_max?.[di] ?? null, // immer Default
+    precipSum: sd.precipitation_sum?.[si] ?? null,
+    wind: round(sd.wind_speed_10m_max?.[si]),
+    sunrise: sd.sunrise?.[si] ?? null,
+    sunset: sd.sunset?.[si] ?? null,
     hours: [],
   };
 
   // Stundenwerte für das Zeitfenster im Hafen (Ankunft -> Abfahrt)
-  if (result.hourly && day.arrival && day.departure) {
+  if (defResult.hourly && day.arrival && day.departure) {
     const fromH = parseInt(day.arrival.slice(0, 2), 10);
     const toH = parseInt(day.departure.slice(0, 2), 10);
-    result.hourly.time.forEach((t, idx) => {
+
+    // Nordic-Stunden als Lookup aufbauen
+    const nordicByTime = {};
+    if (useNordic && nordicResult.hourly) {
+      nordicResult.hourly.time.forEach((t, idx) => {
+        if (t.startsWith(day.date)) nordicByTime[t] = idx;
+      });
+    }
+
+    defResult.hourly.time.forEach((t, idx) => {
       if (!t.startsWith(day.date)) return;
       const h = parseInt(t.slice(11, 13), 10);
       if (h < fromH || h > toH) return;
+      const nIdx = nordicByTime[t];
       out.hours.push({
         hour: h,
-        temp: round(result.hourly.temperature_2m[idx]),
-        code: result.hourly.weather_code[idx],
-        precipProb: result.hourly.precipitation_probability?.[idx] ?? null,
+        temp: nIdx != null
+          ? round(nordicResult.hourly.temperature_2m[nIdx])
+          : round(defResult.hourly.temperature_2m[idx]),
+        code: nIdx != null
+          ? nordicResult.hourly.weather_code[nIdx]
+          : defResult.hourly.weather_code[idx],
+        precipProb: defResult.hourly.precipitation_probability?.[idx] ?? null, // immer Default
       });
     });
   }
